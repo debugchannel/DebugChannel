@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="DebugChannel is the easy way to debug application stacks.">
+        <meta name="author" content="">
+        <link rel="shortcut icon" href="/favicon.ico">
+
+        <title id='pagetitle' data-original-title='{{{pagetitle}}}'>{{{pagetitle}}}</title>
+
+        <link href="/lib/bootstrap/css/bootstrap.css" rel="stylesheet">
+
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+          <script src="../../assets/js/html5shiv.js"></script>
+          <script src="../../assets/js/respond.min.js"></script>
+        <![endif]-->
+    </head>
+
+    <body>
+
+
+        <!-- Wrap all page content here -->
+        <div id="wrap">
+
+            <!-- phpref tooltip container -->
+            <div id='rTip'></div>
+
+            <!-- Fixed navbar -->
+            <div class="navbar navbar-default navbar-fixed-top">
+                <div class="container">
+                    <div class="navbar-header">
+                        <h3 class="pull-left">
+                            <span class='logo' data-home-url='{{homeurl}}'>debug<span class='second-part'>channel</span></span>
+                        </h3>
+                        <h4>personal edition (beta)</h4>
+                        <!--
+                        <a class="navbar-brand" href="#"><img src="/debugchannel.png"></a>
+                      -->
+                    </div>
+                    <div class="collapse navbar-collapse controls">
+                        <div class="nav navbar-nav nav-pills navbar-right" id="navbar-controls">
+
+                            <div class="option-help-group">
+                            <button class="btn btn-primary navbar-btn" data-toggle="modal" href="#options" ><span class="glyphicon glyphicon-cog"></span> Options</button>
+                            <button class="btn btn-primary navbar-btn" data-toggle="modal" href="#help-docs" ><span class="glyphicon glyphicon-info-sign"></span> Documentation</button>
+                            <button class="btn btn-primary navbar-btn" data-toggle="modal" href="#feedback" ><span class="glyphicon glyphicon-comment"></span> Feedback</button>
+                            </div>
+                        </div>
+                    </div><!--/.nav-collapse -->
+                </div>
+            </div>
+
+            <!-- Begin page content -->
+
+                <!-- Breadcrumbs -->
+
+            <div class="breadcrumb-container">
+                <div class="container">
+                    <ol class="breadcrumb">
+                        <li></li> {{{ breadcrumbs }}}
+                    </ol>
+                    <div class="pull-right">
+                        <!--
+                        <button id='zeroclipboard' class="btn btn-xs btn-default navbar-btn copy-to-clipboard" type="button">Copy to Clipboard <span class="glyphicon glyphicon-book"></span></button>
+                            -->
+                        <button class="btn btn-xs btn-default navbar-btn clear-all" type="button" disabled="disabled"><span id="num-messages-display">Clear</span> <span class="glyphicon glyphicon-trash"></span></button>
+                        <button class="btn btn-xs btn-success navbar-btn start" type="button">Start <span class="glyphicon glyphicon-play"></span></button>
+                        <button class="btn btn-xs btn-warning navbar-btn stop" type="button">Stop <span class="glyphicon glyphicon-stop"></span></button>
+                    </div>
+                </div>
+            </div>
+
+            <div id='thanks' class="alert alert-success alert-success">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                <strong>Thank you for your thoughts!</strong> Debugchannel thinks you are wonderful. Long may your code be bug free!
+            </div>
+
+            <div class="container main-debug-container">
+
+                <!-- Chat
+                <div class="panel panel-default">
+                  <div class="panel-heading" style="height: 55px;">
+                    <h3 class="panel-title" style="float: left; margin-top: 5px;">
+                    <span class="glyphicon glyphicon-envelope "></span> Welcome to DebugChannel!</h3>
+                    <span class="glyphicon glyphicon-remove-circle pull-right"></span>
+                  </div>
+                  <div class="panel-body">
+                    This is a little note from the DebugChannel support team. If you need any help please chat to use on <a href="/support/">debugchannel.com/support</a>
+                  </div>
+                </div>
+                -->
+
+                <div id='debugs'></div>
+
+                <!-- Notification Message
+          <div class="row">
+            <div class="col-sm-6" >
+              0 <span class="glyphicon glyphicon-file "></span> ubuntuserver:/var/log/apache2/error.log
+            </div>
+            <div class="col-sm-6">
+              <div class="btn-toolbar">
+                <div class="btn-group pull-right">
+                  <button class="btn btn-default" type="button">
+                    <span class="glyphicon glyphicon-repeat"></span>
+                  </button>
+                  <button class="btn btn-default" type="button">
+                    <span class="glyphicon glyphicon-remove-circle"></span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-12" style="background-color: #EEEEEE; padding: 20px 20px 20px 20px; margin-top: 10px">
+              <p>[Mon Oct 21 15:26:46 2013] [crit] [client ::1] (13)Permission denied: /var/www/debugchannel/bootstrap/.htaccess pcfg_openfile: unable to check htaccess file, ensure it is readable
+              </p>
+            </div>
+          </div>
+
+      -->
+
+        <!-- Options -->
+        <div class="modal fade" id="options" tabindex="-1" role="dialog" aria-labelledby="options" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title">Setup</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal" role="form">
+                            <div class="form-group">
+                                <label for="messageDirection" class="col-lg-4 control-label">Message Direction</label>
+                                <div class="col-lg-8">
+                                    <select id="messageDirection" class="form-control">
+                                        <option value="ascending">Ascending</option>
+                                        <option value="descending">Descending</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="messageLimit" class="col-lg-4 control-label">Message Limit</label>
+                                <div class="col-lg-8">
+                                    <select id="messageLimit" class="form-control">
+                                        <option value='10'>10</option>
+                                        <option value='100'>100</option>
+                                        <option value='500'>500</option>
+                                        <option value='1000'>1000</option>
+                                        <option value='0'>&#8734;</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="messageExpireTime" class="col-lg-4 control-label">Message Expiry Time</label>
+                                <div class="col-lg-8">
+                                    <select id="messageExpireTime" class="form-control">
+                                        <option value='5'>5 sec</option>
+                                        <option value='60'>1 min</option>
+                                        <option value='3600'>1 hour</option>
+                                        <option value='86400'>1 day</option>
+                                        <option value='0'>never</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="showWelcomeMessage" class="col-lg-4 control-label">Welcome message</label>
+                                <div class="col-lg-8">
+                                    <input id="showWelcomeMessage" type='checkbox' value='1'>
+                                </div>
+                            </div>
+
+                            <hr />
+
+                            <h4 id='keyboardShortcuts'>Keyboard Shortcuts</h4>
+                            <span>Click on shortcut to change value.</span>
+
+                        </form>
+                    </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-primary" data-dismiss="modal">Done</button>
+              </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
+        <div class="modal fade" id="help-docs" tabindex="-1" role="dialog" aria-labelledby="helpDocs" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title">Documentation</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal" role="form">
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
+        <div class="modal fade" id="feedback" tabindex="-1" role="dialog" aria-labelledby="feedback" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title">Feedback</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal" role="form">
+
+                            <div class="form-group">
+
+                                <label for="feedbackType" class="col-lg-3 control-label">Type</label>
+                                <div class="col-lg-9">
+                                    <select id="feedbackType" class="form-control">
+                                        <option value="feature">Feature Request</option>
+                                        <option value="bug">Report Bug</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="feedbackMessage" class="col-lg-3 control-label">Message</label>
+                                <div class="col-lg-9">
+                                    <textarea id="feedbackMessage" class='form-control' placeholder="Get in contact!"></textarea>
+                               </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="feedbackEmail" class="col-lg-3 control-label">Who are you?</label>
+                                <div class="col-lg-9">
+                                    <input type="text" id="feedbackEmail" class='form-control' placeholder="You don't have say if you don't want." />
+                               </div>
+                            </div>
+
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                      <button id="feedbackSubmit" type="button" class="btn btn-primary" data-dismiss="modal">Submit</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
+        <div class="notices-bottom container">
+            <p class="pull-left">Copyright DebugChannel 2013 - <a href="http://debugchannel.com/terms">Terms and 3Conditions</a></p>
+            <p class="pull-right personal-notice">DebugChannel Personal Edition is for personal, non-commerical usage only. For commercial usage, please upgrade to <a href="http://debugchannel.com/enterprise">Enterprise Edition.</a></p>
+        </div>
+
+        <script src="/socket.io/socket.io.js"></script>
+        <!-- NEED TO GET RID OF ALL THESE -->
+        <script src="/stacktrace/stacktrace.js"></script>
+        <script src="/jquery/jquery.js"></script>
+        <script src="/lib/bootstrap/js/bootstrap.min.js"></script>
+        <script src="/momentjs/min/moment.min.js"></script>
+        <script src="/mousetrap/mousetrap.min.js"></script>
+        <script src="/lib/mousetrap-record-mod.js"></script>
+        <script src="/zeroclipboard/ZeroClipboard.js"></script>
+
+        <!-- END OF STUFF TO GET RID OF -->
+        </script>
+        <script type='text/javascript'>
+            var initialSubscription = {{{route}}};
+            // var base = goog.getObjectByName('dc.base');
+            // base();
+        </script>
+
+    	<link href="/style.css" rel="stylesheet" media="screen"></link>
+        <script src="/program.js"></script>
+
+    </body>
+</html>

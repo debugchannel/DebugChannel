@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <link rel="shortcut icon" href="/favicon.ico">
+        <title>debugchannel docs</title>
+    </head>
+
+    <style>
+    </style>
+
+    <body>
+
+        <p>
+            <h1>DebugChannel Explained</h3>
+        </p>
+
+        <p>
+            <h2>What?</h2>
+            Debugchannel is a tool to aggregate information, format it and make it available in a browser in a quick and easy to consume format<br/><br/>
+            It is made up of three parts ...
+            <ul>
+                <li>
+                    <a href="#clients">Clients</a> send messages to the server and may be considered the producers or sources of information.
+                </li>
+                <li>
+                    The <a href="#server">server</a> routes messages from clients to the webapp. It accepts http POST requests from clients and GET requests from browsers. It is responsible for authentication and routing messages between the client(s) and the webapp(s).
+                </li>
+                <li>
+                    The <a href="#webapp">webapp</a>. Delivered to the browser by the server - like most (all?) webapps it is a collection of html, javascript and css assets. The webapp is responsible for formatting parsing and displaying <a href='#messages'>messages</a>.
+                </li>
+            </ul>
+
+            A picture is worth a thousand bytes. Here's a picture Jim made. Doesn't it look great!
+        </p>
+
+        <p>
+            <h2>Other Concepts</h2>
+
+            <h3>Messages</h3>
+            <p>
+                Messages are a JSON string payload that represents information to be displayed in the webapp. A message is the unit-of-data that is routed by the server. Messages may encode information about a large variety of different payloads but they all share a similar <a href='#structure'>structure</a>.
+            </p>
+
+            <h3>Channels</h3>
+            <p>
+                ... are pretty awesome. They control which webapp gets which message because not everybody wants to view everything all the time. Want some? Here you go - they're just strings.
+
+                <p>
+                    <code><i>
+                        phpunit</br>
+                        catvideoapp<br/>
+                        catvideoapp/php<br/>
+                        catvideoapp/php/exceptions<br/>
+                        catvideoapp/database/logs<br/>
+                        catvideoapp/database/logs/slowquery<br/>
+                        i/love/cats
+                    </i></code>
+                <p>
+
+                The webapp currently connects to exactly one channel. Each message has exactly one channel. If these look like the pathname component of a http url (minus a leading /) this is no accident. The server uses the http request url of POST and GET requests to deterime to the channel of messages and the webapp respectively. </br><br/>
+
+                Channels can exist in isolation and they may have a hierarchical relationship. The hierarchy part works much the same as a filesystem does; that is to say the / does what you'd expect. You can say things like <code>catvideoapp</code> is-parent-of or contains <code>catvideoapp/php</code> or you can flip it and say channel <code>a/b/c</code> is-decendant-of or is-a-subchannel-of <code>a/b</code>. Stuff like that. Channels hierarchy is determined by wildcard matching so the you can say <code>x</code> contains <code>x/y/z</code> even if the concept of <code>x/y</code> doesn't exist. The wildcard descendant matching works at channel boundaries eg, channel <code>peter</code> does contain channel <code>peterthegreat</code>.<br/><br/>
+
+                The root channel (or empty string) is special in that every other channel is a descent of it. For this reason the server does not allow subscriptions here.
+
+            </p>
+
+            <h3>The Webapp</h3>
+            <p>
+                The purpose of the webapp is to display messages which have been published on a channel and its decendant channels. The channel which the webapp subscribes to is determined by the url it is requested from.
+
+                Eg, to subscribe to messages sent to <code>catvideo</code> and it's decendant channels visit <code>http://debugchannel.com/catvideo</code>. To subscribe to messages sent to <code>catvideo/kittens/cuteandfluffy</code> visit <code>http://debugchannel.com/catvideo/kittens/cuteandfluffy</code>. You get the idea.<br/><br/>
+
+                ... explain the ui ...
+            </p>
+
+            <h2>The Clients</h3>
+
+            <h3>The PHP Client</h3>
+            <p>
+                The original motivation for Debug channel was help solve the problems (TODO explain in exhastive detail the print_r, var_dump issues) you enjoy debugging with php via print_r() and var_dump().
+            </p>
+        </p>
+
+        <div class="tail">
+            <h2>dctail</h2>
+            <!-- what it is -->
+            dctail is a commandline program that watches files for append operations and publishes these appended lines to a debug channel.
+            It can watch multiple files simultanously, allowing each file to publish to a distinct channel.
+            It uses GNU's tail internally to watch files, so it will have very similar behavour, for example when using dctail on a file with more than 10 lines, only the last 10 lines are output.
+
+            <!-- what it can do -->
+            It can:
+            <ul>
+                 <li>watch a file for append operations</li>
+                 <li>continue watching files after they've been deleted</li>
+                 <li>watch multiple files simultnaously</li>
+                 <li>publich same file to multiple channels</li>
+                 <li>public multiple files to same channel</li>
+                 <li>outputs the line appends to stdout</li>
+             </ul>
+
+            <!-- how to use it -->
+            dctail can be configured using arguments as well as a JSON configuration file in <code>/usr/local/etc/dctail</code>.
+            the configuration file can look something like this:
+
+            <pre><code>
+{
+    "address": "http://192.168.2.158:1025",
+    "apiKey": "someApiKey",
+    "files": {
+        "/var/log/mylog.txt":logschannel
+    }
+}
+            </code></pre>
+            <h3>Configuration File</h3>
+            this specifies 3 things:
+            <ul>
+                <li><b>address</b>: address of debugchannel server and port. must contain the 'http'/'https'</li>
+                <li><b>apiKey</b>: unique identifier of user sending the messages. this will be provided when you create an accoutn.</li>
+                <li><b>files</b>: specifies all log files to watch and the channel to publish on. In this example the log file <code>/var/log/mylog.txt</code> is being published to channel <code>logschannel</code>.
+                multiple files can be specified here.</li>
+            </ul>
+            The <b>address</b> and <b>apiKey</b> must be set in the configuration file and cannot be set anywhere else.
+            the <b>files</b> needs to be set but doesn't need to contain any files.
+
+            <h3>Command Line Usage</h3>
+            The comamnd can also take arguments which specify additional files to watch as well as the files specified in the configuration file.
+            The syntax for specifying files on the command line is:
+            <pre><code>dctail file1:channel1 file2:channel2 ... fileN:channelN</code></pre>
+            where the <b>:</b> separates the file from the channel to publish it on.
+            The same file can be listed multiple times to allow the same file's appends to be broadcast to mulitple channels.
+
+            dctail can also generate the configuration file from defaults. <b>This will overwrite any changes to an existing configuration file.</b>
+            To generate a new configuration file:
+            <pre><code>dctail --setup</code></pre>
+            this will cause dctail to generate the new configuration file and then exit. It will ignore any files specified in the command line or in the configuration file.
+        </div>
+
+    </body>
+</html>

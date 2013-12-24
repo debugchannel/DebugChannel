@@ -1,0 +1,29 @@
+{
+  "name": "DebugChannel",
+  "version": "0.0.0",
+  "authors": [
+    "squareproton@gmail.com"
+  ],
+  "componentsDirectory": "static/bower_components",
+  "description": "Debugging on crack",
+  "main": "debugchannel.js",
+  "license": "See attached liscensed file.",
+  "private": true,
+  "dependencies": {
+    "stacktrace": "*",
+    "jquery": ">= 2.0.0",
+    "momentjs": "*",
+    "mousetrap": "*",
+    "zeroclipboard": "*"
+  },
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "resolutions": {
+    "jquery": ">= 2.0.0"
+  }
+}

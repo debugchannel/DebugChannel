@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <link rel="shortcut icon" href="/favicon.ico">
+
+        <title>debugchannel - qunit</title>
+
+        <link href="/qunit/qunit/qunit.css" rel="stylesheet">
+
+    </head>
+
+    <body>
+
+        <div id="qunit"></div>
+        <div id="qunit-fixture"></div>
+
+        <!-- these includes need to match index.tmpl otherwise the resources are going to be different -->
+        <script src="/jquery/jquery.js"></script>
+        <script src="/3rdParty/bootstrap/js/bootstrap.min.js"></script>
+        <script src="/momentjs/min/moment.min.js"></script>
+        <script src="/store/dist/store2.min.js"></script>
+
+        <script type='text/javascript'>
+            var initialSubscription = ['qunit'];
+            var curl = {
+                baseUrl: '/js',
+                packages: {
+                    lodash: { location: '/lodash/dist', main: 'lodash' }
+                },
+                paths: {}
+            };
+        </script>
+        <script src="/curl/dist/curl-kitchen-sink/curl.js"></script>
+        <script src='/debugchannel-javascript-client/DebugChannel.js'></script>
+
+        <script src="/qunit/qunit/qunit.js"></script>
+        <script src="/qunitBase.js"></script>
+
+    </body>
+</html>
